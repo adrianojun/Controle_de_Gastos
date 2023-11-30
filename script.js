@@ -7,76 +7,51 @@ const dateSelector = document.querySelector("#date");
 const btnSearch = document.querySelector("#btnSearch");
 const startDate = document.querySelector("#startDate");
 const endDate = document.querySelector("#endDate");
+const btnTagSearch = document.querySelector("#btnTagSearch");
+const tagInput = document.querySelector("#tag");
 
 const incomes = document.querySelector(".incomes");
 const expenses = document.querySelector(".expenses");
 const total = document.querySelector(".total");
 
-// Carregar itens do Local Storage durante a inicialização
 let items = getItensBD();
 
-// Função para obter itens do Local Storage
-function getItensBD() {
-  return JSON.parse(localStorage.getItem("db_items")) || [];
-}
-
-// Função para definir itens no Local Storage
-function setItensBD() {
-  localStorage.setItem("db_items", JSON.stringify(items));
-}
-
-// Carregar itens quando a página estiver pronta
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
   loadItens();
 });
 
-// Adicionar evento de clique para o botão Incluir
-btnNew.addEventListener('click', function() {
-  console.log("Botão Incluir clicado");
-
-  if (descItem.value === "" || amount.value === "" || type.value === "") {
+btnNew.addEventListener('click', () => {
+  if (validateForm()) {
+    addItem();
+    clearForm();
+    loadItens();
+  } else {
     alert("Preencha todos os campos!");
-    return;
   }
-
-  items.push({
-    desc: descItem.value,
-    amount: Math.abs(amount.value).toFixed(2),
-    type: type.value,
-    date: dateSelector.value,
-  });
-
-  setItensBD();
-  loadItens();
-
-  descItem.value = "";
-  amount.value = "";
 });
 
-// Adicionar evento de clique para o botão de pesquisa
-btnSearch.addEventListener("click", function() {
+btnSearch.addEventListener("click", () => {
   loadItens();
 });
 
-// Função para excluir um item
+btnTagSearch.addEventListener("click", () => {
+  loadItens();
+});
+
 function deleteItem(index) {
   items.splice(index, 1);
   setItensBD();
   loadItens();
 }
 
-// Função para inserir um item na tabela
 function insertItem(item, index) {
-  let tr = document.createElement("tr");
+  const tr = document.createElement("tr");
+  const icon = item.type === "Entrada" ? '<i class="bx bxs-chevron-up-circle"></i>' : '<i class="bx bxs-chevron-down-circle"></i>';
 
   tr.innerHTML = `
     <td>${item.desc}</td>
     <td>R$ ${item.amount}</td>
-    <td class="columnType">${
-      item.type === "Entrada"
-        ? '<i class="bx bxs-chevron-up-circle"></i>'
-        : '<i class="bx bxs-chevron-down-circle"></i>'
-    }</td>
+    <td class="columnType">${icon}</td>
     <td>${item.date}</td>
     <td class="columnAction">
       <button onclick="deleteItem(${index})"><i class='bx bx-trash'></i></button>
@@ -86,55 +61,118 @@ function insertItem(item, index) {
   tbody.appendChild(tr);
 }
 
-// Função para carregar itens na tabela
 function loadItens() {
-  console.log("Carregando itens");
-
   const start = startDate.value;
   const end = endDate.value;
+  const tag = tagInput.value.toLowerCase();
 
-  // Se as datas de início e fim não estiverem definidas, exibe todas as operações
-  const filteredItems = start && end
-    ? items.filter(item => item.date >= start && item.date <= end)
-    : items;
+  const filteredItems = items.filter(item => {
+    const isWithinDateRange = (!start || item.date >= start) && (!end || item.date <= end);
+    const hasTag = !tag || item.tags.includes(tag);
+    return isWithinDateRange && hasTag;
+  });
 
   tbody.innerHTML = "";
   filteredItems.forEach((item, index) => {
     insertItem(item, index);
   });
 
-  getTotals();
+  updateTotals();
 }
 
-// Função para obter totais
-function getTotals() {
-  const amountIncomes = items
-    .filter((item) => item.type === "Entrada")
-    .map((transaction) => Number(transaction.amount));
+function updateTotals() {
+  const amountIncomes = getTransactionTotal("Entrada");
+  const amountExpenses = getTransactionTotal("Saída");
 
-  const amountExpenses = items
-    .filter((item) => item.type === "Saída")
-    .map((transaction) => Number(transaction.amount));
-
-  const totalIncomes = amountIncomes
-    .reduce((acc, cur) => acc + cur, 0)
-    .toFixed(2);
-
-  const totalExpenses = Math.abs(
-    amountExpenses.reduce((acc, cur) => acc + cur, 0)
-  ).toFixed(2);
-
-  const totalItems = (totalIncomes - totalExpenses).toFixed(2);
+  const totalIncomes = amountIncomes.toFixed(2);
+  const totalExpenses = Math.abs(amountExpenses).toFixed(2);
+  const totalItems = (amountIncomes - amountExpenses).toFixed(2);
 
   incomes.innerHTML = totalIncomes;
   expenses.innerHTML = totalExpenses;
   total.innerHTML = totalItems;
 }
 
-// Adicionar evento de mudança para o campo de seleção de data
-dateSelector.addEventListener("change", function () {
+function getTransactionTotal(type) {
+  return items
+    .filter(item => item.type === type)
+    .map(item => Number(item.amount))
+    .reduce((acc, cur) => acc + cur, 0);
+}
+
+dateSelector.addEventListener("change", () => {
   loadItens();
 });
+
+function parseTags(description) {
+  const regex = /#\w+/g;
+  return (description.match(regex) || []).map(tag => tag.toLowerCase());
+}
+
+function getItensBD() {
+  return JSON.parse(localStorage.getItem("db_items")) || [];
+}
+
+function setItensBD() {
+  localStorage.setItem("db_items", JSON.stringify(items));
+}
+
+function validateForm() {
+  return descItem.value !== "" && amount.value !== "" && type.value !== "";
+}
+
+function addItem() {
+  items.push({
+    desc: descItem.value,
+    amount: Math.abs(amount.value).toFixed(2),
+    type: type.value,
+    date: dateSelector.value,
+    tags: parseTags(descItem.value),
+  });
+
+  setItensBD();
+}
+
+function clearForm() {
+  descItem.value = "";
+  amount.value = "";
+}
+
+function loadItens() {
+  console.log("Carregando itens");
+
+  const start = startDate.value;
+  const end = endDate.value;
+  const tag = tagInput.value.toLowerCase();
+
+  // Filtra os itens por data
+  const dateFilteredItems = items.filter(item => {
+    const isWithinDateRange = (!start || item.date >= start) && (!end || item.date <= end);
+    return isWithinDateRange;
+  });
+
+  // Filtra os itens pela descrição (tag), ignorando maiúsculas e minúsculas
+  const tagFilteredItems = items.filter(item => {
+    const itemDesc = item.desc.toLowerCase();
+    return !tag || itemDesc.includes(tag);
+  });
+
+  // Combina os resultados das duas filtragens
+  const filteredItems = dateFilteredItems.filter(item =>
+    tagFilteredItems.includes(item)
+  );
+
+  tbody.innerHTML = "";
+  filteredItems.forEach((item, index) => {
+    insertItem(item, index);
+  });
+
+  updateTotals();
+}
+
+
+
+
 
 // Inicializar o carregamento de itens
 loadItens();

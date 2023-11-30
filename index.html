@@ -8,33 +8,53 @@
 
   <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" href="style.css">
+  
 </head>
 <body>
   <main>
     <div class="resume">
       <div>
-        Entradas: R$
+        <h3>Entradas: R$</h3>
         <span class="incomes">0.00</span>
       </div>
       <div>
-        Saídas: R$
+        <h3>Saídas: R$</h3>
         <span class="expenses">0.00</span>
       </div>
       <div>
-        Total: R$
+        <h3>Total: R$</h3>
         <span class="total">0.00</span>
       </div>
     </div>
 
+    <div class="sectionHeader">
+      <h2>Pesquisar por data</h2>
+    </div>
     <div class="newItem">
       <div class="divSearch">
-        <label for="startDate">Data Inicial</label>
+        <label for="startDate">De</label>
         <input type="date" id="startDate" />
-        <label for="endDate">Data Final</label>
+        <label for="endDate">Até</label>
         <input type="date" id="endDate" />
         <button id="btnSearch">Pesquisar</button>
       </div>
-      
+    </div>
+
+    <div class="sectionHeader">
+      <h2>Pesquisar por tag</h2>
+    </div>
+    <div class="newItem">
+      <div class="divTagSearch">
+        <label for="tag">Tag</label>
+        <input type="text" id="tag" />
+        <button id="btnTagSearch">Pesquisar</button>
+      </div>
+    </div>
+
+    <div class="sectionHeader">
+      <h2>Incluir operação</h2>
+    </div>
+    <div class="newItem">
       <div class="divDesc">
         <label for="desc">Descrição</label>
         <input type="text" id="desc" />
@@ -57,6 +77,7 @@
       </div>
       <button id="btnNew">Incluir</button>
     </div>
+
     <div class="divTable">
       <table>
         <thead>
