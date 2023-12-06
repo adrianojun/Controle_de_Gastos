@@ -145,19 +145,16 @@ function loadItens() {
   const end = endDate.value;
   const tag = tagInput.value.toLowerCase();
 
-  // Filtra os itens por data
   const dateFilteredItems = items.filter(item => {
     const isWithinDateRange = (!start || item.date >= start) && (!end || item.date <= end);
     return isWithinDateRange;
   });
 
-  // Filtra os itens pela descrição (tag), ignorando maiúsculas e minúsculas
   const tagFilteredItems = items.filter(item => {
     const itemDesc = item.desc.toLowerCase();
     return !tag || itemDesc.includes(tag);
   });
 
-  // Combina os resultados das duas filtragens
   const filteredItems = dateFilteredItems.filter(item =>
     tagFilteredItems.includes(item)
   );
@@ -174,5 +171,4 @@ function loadItens() {
 
 
 
-// Inicializar o carregamento de itens
 loadItens();
