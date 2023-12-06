@@ -4,93 +4,107 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Basic - Organizador Pessoal de Finanças</title>
 
   <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" href="style.css">
   
 </head>
 <body>
+  <header class="site-header">
+    <div class="logo">
+      <img src="logo.png" alt="Logo" width="50" height="50">
+      <h1>Basic - Organizador Pessoal de Finanças</h1>
+    </div>
+  </header> 
+
   <main>
-    <div class="resume">
-      <div>
-        <h3>Entradas: R$</h3>
-        <span class="incomes">0.00</span>
+    <div class="container">
+      <div class="left-side">
+        <div class="sectionHeader">
+          <h2>Incluir operação</h2>
+        </div>
+        <div class="newItem">
+          <div class="divDesc">
+            <label for="desc">Descrição</label>
+            <input type="text" id="desc" />
+          </div>
+          <div class="divAmount">
+            <label for="amount">Valor</label>
+            <input type="number" id="amount" />
+          </div>
+          <div class="divType">
+            <label for="type">Tipo</label>
+            <select id="type">
+              <option>Entrada</option>
+              <option>Saída</option>
+            </select>
+          </div>
+          <div class="divDate">
+            <label for="date">Data</label>
+            <input type="date" id="date" />
+          </div>
+          <button id="btnNew">Incluir</button>
+        </div>
       </div>
-      <div>
-        <h3>Saídas: R$</h3>
-        <span class="expenses">0.00</span>
-      </div>
-      <div>
-        <h3>Total: R$</h3>
-        <span class="total">0.00</span>
+      
+      <div class="right-side">
+        <div class="sectionHeader">
+          <h2>Pesquisar por data</h2>
+        </div>
+        <div class="newItem">
+          <div class="divSearch">
+            <label for="startDate">De</label>
+            <input type="date" id="startDate" />
+            <label for="endDate">Até</label>
+            <input type="date" id="endDate" />
+            <button id="btnSearch">Pesquisar</button>
+          </div>
+        </div>
+        
+        <div class="sectionHeader">
+          <h2>Pesquisar por tag</h2>
+        </div>
+        <div class="newItem">
+          <div class="divTagSearch">
+            <label for="tag">Tag</label>
+            <input type="text" id="tag" />
+            <button id="btnTagSearch">Pesquisar</button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="sectionHeader">
-      <h2>Pesquisar por data</h2>
-    </div>
-    <div class="newItem">
-      <div class="divSearch">
-        <label for="startDate">De</label>
-        <input type="date" id="startDate" />
-        <label for="endDate">Até</label>
-        <input type="date" id="endDate" />
-        <button id="btnSearch">Pesquisar</button>
+    <div class="results">
+      <div class="divTable">
+        <table>
+          <thead>
+            <tr>
+              <th>Descrição</th>
+              <th class="columnAmount">Valor</th>
+              <th class="columnType">Tipo</th>
+              <th class="columnDate">Data</th>
+              <th class="columnAction"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <div class="resume">
+              <div>
+                <h3>Entradas: R$</h3>
+                <span class="incomes">0.00</span>
+              </div>
+              <div>
+                <h3>Saídas: R$</h3>
+                <span class="expenses">0.00</span>
+              </div>
+              <div>
+                <h3>Total: R$</h3>
+                <span class="total">0.00</span>
+              </div>
+            </div>
+              </tbody>
+        </table>
       </div>
-    </div>
-
-    <div class="sectionHeader">
-      <h2>Pesquisar por tag</h2>
-    </div>
-    <div class="newItem">
-      <div class="divTagSearch">
-        <label for="tag">Tag</label>
-        <input type="text" id="tag" />
-        <button id="btnTagSearch">Pesquisar</button>
-      </div>
-    </div>
-
-    <div class="sectionHeader">
-      <h2>Incluir operação</h2>
-    </div>
-    <div class="newItem">
-      <div class="divDesc">
-        <label for="desc">Descrição</label>
-        <input type="text" id="desc" />
-      </div>
-      <div class="divAmount">
-        <label for="amount">Valor</label>
-        <input type="number" id="amount" />
-      </div>
-      <div class="divType">
-        <label for="type">Tipo</label>
-        <select id="type">
-          <option>Entrada</option>
-          <option>Saída</option>
-        </select>
-      </div>
-      <div class="divDate">
-        <label for="date">Data</label>
-        <input type="date" id="date" />
-      </div>
-      <button id="btnNew">Incluir</button>
-    </div>
-
-    <div class="divTable">
-      <table>
-        <thead>
-          <tr>
-            <th>Descrição</th>
-            <th class="columnAmount">Valor</th>
-            <th class="columnType">Tipo</th>
-            <th class="columnDate">Data</th>
-            <th class="columnAction"></th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
     </div>
   </main>  
 
