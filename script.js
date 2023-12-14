@@ -17,31 +17,31 @@ const total = document.querySelector(".total");
 let items = getItensBD();
 
 document.addEventListener('DOMContentLoaded', () => {
-  loadItens();
+  loadItensByDate(); 
 });
 
 btnNew.addEventListener('click', () => {
   if (validateForm()) {
     addItem();
     clearForm();
-    loadItens();
+    loadItensByDate(); 
   } else {
     alert("Preencha todos os campos!");
   }
 });
 
 btnSearch.addEventListener("click", () => {
-  loadItens();
+  loadItensByDate();
 });
 
 btnTagSearch.addEventListener("click", () => {
-  loadItens();
+  loadItensByTag();
 });
 
 function deleteItem(index) {
   items.splice(index, 1);
   setItensBD();
-  loadItens();
+  loadItensByDate();
 }
 
 function insertItem(item, index) {
@@ -61,17 +61,35 @@ function insertItem(item, index) {
   tbody.appendChild(tr);
 }
 
-function loadItens() {
+function loadItensByDate() {
+  console.log("Carregando itens por data");
+
   const start = startDate.value;
   const end = endDate.value;
-  const tag = tagInput.value.toLowerCase();
 
-  const filteredItems = items.filter(item => {
+  // Filtra os itens por data
+  const dateFilteredItems = items.filter(item => {
     const isWithinDateRange = (!start || item.date >= start) && (!end || item.date <= end);
-    const hasTag = !tag || item.tags.includes(tag);
-    return isWithinDateRange && hasTag;
+    return isWithinDateRange;
   });
 
+  updateTable(dateFilteredItems);
+}
+
+function loadItensByTag() {
+  console.log("Carregando itens por tag");
+
+  const tag = tagInput.value.toLowerCase();
+
+  const tagFilteredItems = items.filter(item => {
+    const itemDesc = item.desc.toLowerCase();
+    return !tag || itemDesc.includes(tag);
+  });
+
+  updateTable(tagFilteredItems);
+}
+
+function updateTable(filteredItems) {
   tbody.innerHTML = "";
   filteredItems.forEach((item, index) => {
     insertItem(item, index);
@@ -101,7 +119,7 @@ function getTransactionTotal(type) {
 }
 
 dateSelector.addEventListener("change", () => {
-  loadItens();
+  loadItensByDate();
 });
 
 function parseTags(description) {
@@ -137,38 +155,3 @@ function clearForm() {
   descItem.value = "";
   amount.value = "";
 }
-
-function loadItens() {
-  console.log("Carregando itens");
-
-  const start = startDate.value;
-  const end = endDate.value;
-  const tag = tagInput.value.toLowerCase();
-
-  const dateFilteredItems = items.filter(item => {
-    const isWithinDateRange = (!start || item.date >= start) && (!end || item.date <= end);
-    return isWithinDateRange;
-  });
-
-  const tagFilteredItems = items.filter(item => {
-    const itemDesc = item.desc.toLowerCase();
-    return !tag || itemDesc.includes(tag);
-  });
-
-  const filteredItems = dateFilteredItems.filter(item =>
-    tagFilteredItems.includes(item)
-  );
-
-  tbody.innerHTML = "";
-  filteredItems.forEach((item, index) => {
-    insertItem(item, index);
-  });
-
-  updateTotals();
-}
-
-
-
-
-
-loadItens();
