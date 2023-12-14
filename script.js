@@ -67,7 +67,6 @@ function loadItensByDate() {
   const start = startDate.value;
   const end = endDate.value;
 
-  // Filtra os itens por data
   const dateFilteredItems = items.filter(item => {
     const isWithinDateRange = (!start || item.date >= start) && (!end || item.date <= end);
     return isWithinDateRange;
